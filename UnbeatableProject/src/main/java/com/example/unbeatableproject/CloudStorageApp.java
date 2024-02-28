@@ -9,6 +9,10 @@ import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 public class CloudStorageApp extends Application {
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "admin";
@@ -35,6 +39,7 @@ public class CloudStorageApp extends Application {
         Button createAccountButton = new Button("Create Account");
         Button helpButton = new Button("Help");
         ListView<String> fileList = new ListView<>();
+        fileList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         uploadButton.setDisable(true);
         deleteButton.setDisable(true);
@@ -73,6 +78,20 @@ public class CloudStorageApp extends Application {
                     errorMessageLabel.setText("Invalid username or password");
                 }
             }
+        });
+
+        uploadButton.setOnAction(event -> {
+            List<File> selectedFiles = fileChooser.showOpenMultipleDialog(primaryStage);
+            if (selectedFiles != null) {
+                for (File file : selectedFiles) {
+                    fileList.getItems().add(file.getName());
+                }
+            }
+        });
+
+        deleteButton.setOnAction(event -> {
+            List<String> selectedFiles = new ArrayList<>(fileList.getSelectionModel().getSelectedItems());
+            fileList.getItems().removeAll(selectedFiles);
         });
 
         helpButton.setOnAction(event -> {
