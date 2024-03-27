@@ -29,14 +29,15 @@ public class FileOperations {
             uploadDirectory.mkdirs();
         }
 
-        loadUserFiles();
+        loadUploadedFiles();
 
         uploadButton.setOnAction(event -> {
             List<File> selectedFiles = fileChooser.showOpenMultipleDialog(primaryStage);
             if (selectedFiles != null) {
                 for (File file : selectedFiles) {
                     String fileName = file.getName();
-                    String destinationPath = uploadDirectory.getAbsolutePath() + File.separator + fileName;
+                    String destinationPath = uploadDirectory.getAbsolutePath() +
+                            File.separator + fileName;
                     File destinationFile = new File(destinationPath);
                     try (InputStream in = new FileInputStream(file); OutputStream out = new
                             FileOutputStream(destinationFile)) {
@@ -48,14 +49,14 @@ public class FileOperations {
                         fileList.getItems().add(fileName);
                     } catch (IOException e) {
                         e.printStackTrace();
-                        // Handle file copying error
                     }
                 }
             }
         });
 
         deleteButton.setOnAction(event -> {
-            List<String> selectedFiles = new ArrayList<>(fileList.getSelectionModel().getSelectedItems());
+            List<String> selectedFiles = new ArrayList<>(
+                    fileList.getSelectionModel().getSelectedItems());
             for (String fileName : selectedFiles) {
                 File fileToDelete = new File(uploadDirectory, fileName);
                 if (fileToDelete.exists()) {
@@ -69,28 +70,14 @@ public class FileOperations {
         });
     }
 
-    private void loadUserFiles() {
-        File userDirectory = new File(uploadDirectory, loggedInUsername);
-        File[] files = userDirectory.listFiles();
+    private void loadUploadedFiles() {
+        File[] files = uploadDirectory.listFiles();
         if (files != null) {
             for (File file : files) {
                 fileList.getItems().add(file.getName());
             }
         }
     }
-
-    /*private void loadUploadedFiles() {
-        File[] userFiles = getUserFiles(); // Get files associated with the currently logged-in user
-        if (userFiles != null) {
-            for (File file : userFiles) {
-                fileList.getItems().add(file.getName());
-            }
-        }
-    }*/
-    /*private File[] getUserFiles() {
-        File userDirectory = new File(uploadDirectory, loggedInUsername); // User-specific directory
-        return userDirectory.listFiles();
-    }*/
 
     public ListView<String> getFileList() {
         fileList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);

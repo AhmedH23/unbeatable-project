@@ -12,7 +12,7 @@ import java.util.List;
 public class CloudStorageApp extends Application {
     private static final String USERNAME = "admin";
     private static final String PASSWORD = "admin";
-    private int failedAttempts = 0; // Remove 'final' to allow updates
+    private int failedAttempts = 0;
 
     @Override
     public void start(Stage primaryStage) {
@@ -27,13 +27,9 @@ public class CloudStorageApp extends Application {
         errorMessageLabel.setTextFill(Color.RED);
 
         loginBox.getLoginButton().setOnAction(event -> {
-            String enteredUsername = loginBox.getUsername().trim(); // Trim to remove whitespace
-            String enteredPassword = loginBox.getPassword().trim(); // Trim to remove whitespace
-
-            // Load accounts
-            List<Account> accounts = accountManagement.loadAccounts();
-
-            // Check if the entered credentials match any account
+            String enteredUsername = loginBox.getUsername().trim();
+            String enteredPassword = loginBox.getPassword().trim();
+            List<Account> accounts = accountManagement.loadAccounts(enteredUsername); // Pass the logged-in username
             boolean validLogin = false;
             for (Account account : accounts) {
                 if (account.getUsername().equals(enteredUsername) && account.getPassword().equals(enteredPassword)) {
@@ -41,16 +37,13 @@ public class CloudStorageApp extends Application {
                     break;
                 }
             }
-
             if (validLogin) {
-                // Successful login
                 root.getChildren().addAll(fileOperations.getFileList(), fileOperations.getUploadButton(), fileOperations.getDeleteButton());
                 fileOperations.getUploadButton().setDisable(false);
                 fileOperations.getDeleteButton().setDisable(false);
                 root.getChildren().remove(loginBox.getLoginBox());
                 accountManagement.setupSignOut(root, loginBox, fileOperations);
             } else {
-                // Failed login attempt
                 failedAttempts++;
                 if (failedAttempts >= 3) {
                     errorMessageLabel.setText("Too many failed attempts. Your account is locked!");

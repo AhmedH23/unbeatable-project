@@ -10,14 +10,17 @@ import java.util.List;
 
 public class AccountManagement {
     private static final String ACCOUNTS_DIRECTORY = "accounts";
-    private static final String ACCOUNTS_FILE = ACCOUNTS_DIRECTORY + File.separator + "accounts.txt";
+    private static final String ACCOUNTS_FILE = ACCOUNTS_DIRECTORY + File.separator +
+            "accounts.txt";
 
     public void setupSignOut(VBox root, LoginBox loginBox, FileOperations fileOperations) {
-        root.getChildren().removeIf(node -> node instanceof Button && ((Button) node).getText().equals("Sign Out"));
+        root.getChildren().removeIf(node -> node instanceof Button &&
+                ((Button) node).getText().equals("Sign Out"));
 
         Button signOutButton = new Button("Sign Out");
         signOutButton.setOnAction(event -> {
-            root.getChildren().removeAll(signOutButton, fileOperations.getFileList(), fileOperations.getUploadButton(), fileOperations.getDeleteButton());
+            root.getChildren().removeAll(signOutButton, fileOperations.getFileList(),
+                    fileOperations.getUploadButton(), fileOperations.getDeleteButton());
             root.getChildren().add(loginBox.getLoginBox());
             fileOperations.getUploadButton().setDisable(true);
             fileOperations.getDeleteButton().setDisable(true);
@@ -78,23 +81,16 @@ public class AccountManagement {
         persistAccount(account.getUsername(), account.getEmail(), account.getPassword());
     }
 
-    public AccountManagement() {
-        // Create accounts directory if it doesn't exist
-        File directory = new File(ACCOUNTS_DIRECTORY);
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-    }
-
     private void persistAccount(String username, String email, String password) {
-        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(ACCOUNTS_FILE, true)))) {
+        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new
+                FileWriter(ACCOUNTS_FILE, true)))) {
             writer.println(username + "," + email + "," + password);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public List<Account> loadAccounts() {
+    public List<Account> loadAccounts(String loggedInUsername) {
         List<Account> accounts = new ArrayList<>();
         File directory = new File(ACCOUNTS_DIRECTORY);
         if (directory.exists() && directory.isDirectory()) {
@@ -109,12 +105,14 @@ public class AccountManagement {
                                 String username = parts[0];
                                 String email = parts[1];
                                 String password = parts[2];
-                                accounts.add(new Account(username, email, password));
+                                if (username.equals(loggedInUsername)) {
+                                    accounts.add(new Account(username, email, password));
+                                    break;
+                                }
                             }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
-                        // Handle file reading error
                     }
                 }
             }

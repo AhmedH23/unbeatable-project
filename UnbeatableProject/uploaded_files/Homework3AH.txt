@@ -1,8 +1,0 @@
-1. Based on the code below, answer the following questions:
-
-a. What issues can you identify with the code? The code has a few issues: it doesn't handle errors, tries to do too much in one function, unnecessarily makes a list mutable, and lacks documentation.
-
-b. What refactoring methods would you use on it? To improve it, we should split the function into two: one for reading and one for sorting. We also need to add error handling for file operations, use immutable data structures to prevent unintended changes, and document the functions properly.
-
-c. List 3 different test scenarios that would be useful for verification of the code (you
-don’t need to write the tests in code, just explain what they would do). For testing, we can try these three test scenarios: first, test with a valid input file to check if the output file has sorted integers. Second, test with an invalid input file to ensure the code handles errors gracefully. And third, test with a large input file to see if the code performs well without memory or performance issues.
