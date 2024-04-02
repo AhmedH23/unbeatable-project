@@ -12,6 +12,7 @@ public class LoginBox {
     private final PasswordField passwordField;
     private final Button loginButton;
     private final Button createAccountButton;
+    private String loggedInUsername;
 
     public LoginBox() {
         usernameField = new TextField();
@@ -21,48 +22,41 @@ public class LoginBox {
         loginButton = new Button("Login");
         createAccountButton = new Button("Create an Account");
 
-        createAccountButton.setOnAction(event -> {
-            String username = "";
-            String email = "";
-            String password = "";
-            createAccount(username, email, password);
-        });
+        createAccountButton.setOnAction(event -> createAccount());
     }
-
-    public void createAccount(String username, String email, String password) {
+    private void createAccount() {
+        String username = getUsername();
+        String email = "";
+        String password = getPassword();
         Account newAccount = new Account(username, email, password);
         AccountManagement accountManagement = new AccountManagement();
         accountManagement.createAccount(newAccount);
     }
-
     public VBox getLoginBox() {
         VBox loginBox = new VBox(10, usernameField, passwordField, loginButton);
         loginBox.setPadding(new Insets(20));
-
-        // Create an HBox to hold the "Create Account" button
         HBox createAccountBox = new HBox(createAccountButton);
         createAccountBox.setPadding(new Insets(5, 0, 0, 0));
         createAccountBox.setSpacing(10);
-
-        // Add the "Create Account" button to the login box
         loginBox.getChildren().add(createAccountBox);
-
         return loginBox;
     }
-
     public String getUsername() {
         return usernameField.getText();
     }
-
     public String getPassword() {
         return passwordField.getText();
     }
-
     public Button getLoginButton() {
         return loginButton;
     }
-
     public Button getCreateAccountButton() {
         return createAccountButton;
+    }
+    public void setLoggedInUsername(String username) {
+        this.loggedInUsername = username;
+    }
+    public String getLoggedInUsername() {
+        return loggedInUsername;
     }
 }
