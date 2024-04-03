@@ -29,8 +29,8 @@ public class LoginBox {
         String email = "";
         String password = getPassword();
         Account newAccount = new Account(username, email, password);
-        AccountManagement accountManagement = new AccountManagement();
-        accountManagement.createAccount(newAccount);
+        AccountManager accountCreation = new AccountManager();
+        accountCreation.createAccount(newAccount);
     }
     public VBox getLoginBox() {
         VBox loginBox = new VBox(10, usernameField, passwordField, loginButton);

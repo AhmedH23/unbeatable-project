@@ -8,14 +8,14 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import java.util.List;
 
-public class CloudStorageApp extends Application {
+public class MainActivity extends Application {
     private int failedAttempts = 0;
 
     @Override
     public void start(Stage primaryStage) {
         VBox root = new VBox(10);
         LoginBox loginBox = new LoginBox();
-        AccountManagement accountManagement = new AccountManagement();
+        AccountManager accountManagement = new AccountManager();
         root.getChildren().add(loginBox.getLoginBox());
 
         Label errorMessageLabel = new Label();
@@ -28,7 +28,6 @@ public class CloudStorageApp extends Application {
             boolean validLogin = accounts.stream().anyMatch(account -> account.getUsername().equals(enteredUsername) &&
                     account.getPassword().equals(enteredPassword));
             if (validLogin) {
-                // Create FileOperations instance after successful login
                 FileOperations fileOperations = new FileOperations(primaryStage, enteredUsername);
                 root.getChildren().addAll(fileOperations.getFileList(), fileOperations.getUploadButton(),
                         fileOperations.getDeleteButton());

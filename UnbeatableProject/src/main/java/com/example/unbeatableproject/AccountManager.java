@@ -7,7 +7,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AccountManagement {
+public class AccountManager {
     private static final String ACCOUNTS_DIRECTORY = "accounts";
     private static final String ACCOUNTS_FILE = ACCOUNTS_DIRECTORY + File.separator + "accounts.txt";
 
