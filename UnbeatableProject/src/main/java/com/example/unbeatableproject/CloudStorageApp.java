@@ -28,7 +28,6 @@ public class CloudStorageApp extends Application {
             boolean validLogin = accounts.stream().anyMatch(account -> account.getUsername().equals(enteredUsername) &&
                     account.getPassword().equals(enteredPassword));
             if (validLogin) {
-                // Create FileOperations instance after successful login
                 FileOperations fileOperations = new FileOperations(primaryStage, enteredUsername);
                 root.getChildren().addAll(fileOperations.getFileList(), fileOperations.getUploadButton(),
                         fileOperations.getDeleteButton());
