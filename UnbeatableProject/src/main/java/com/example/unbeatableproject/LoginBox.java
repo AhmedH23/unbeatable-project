@@ -34,9 +34,9 @@ public class LoginBox {
     }
     public VBox getLoginBox() {
         VBox loginBox = new VBox(10, usernameField, passwordField, loginButton);
-        loginBox.setPadding(new Insets(20));
+        loginBox.setPadding(new Insets(0));
         HBox createAccountBox = new HBox(createAccountButton);
-        createAccountBox.setPadding(new Insets(5, 0, 0, 0));
+        createAccountBox.setPadding(new Insets(0, 0, 0, 0));
         createAccountBox.setSpacing(10);
         loginBox.getChildren().add(createAccountBox);
         return loginBox;

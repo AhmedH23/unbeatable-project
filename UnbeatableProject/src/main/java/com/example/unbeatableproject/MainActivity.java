@@ -13,7 +13,7 @@ public class MainActivity extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        VBox root = new VBox(10);
+        VBox root = new VBox(1);
         LoginBox loginBox = new LoginBox();
         AccountManager accountManagement = new AccountManager();
         root.getChildren().add(loginBox.getLoginBox());
@@ -30,9 +30,10 @@ public class MainActivity extends Application {
             if (validLogin) {
                 FileOperations fileOperations = new FileOperations(primaryStage, enteredUsername);
                 root.getChildren().addAll(fileOperations.getFileList(), fileOperations.getUploadButton(),
-                        fileOperations.getDeleteButton());
+                        fileOperations.getDeleteButton(), fileOperations.getDownloadButton());
                 fileOperations.getUploadButton().setDisable(false);
                 fileOperations.getDeleteButton().setDisable(false);
+                fileOperations.getDownloadButton().setDisable(false);
                 root.getChildren().remove(loginBox.getLoginBox());
                 accountManagement.setupSignOut(root, loginBox, fileOperations);
             } else {

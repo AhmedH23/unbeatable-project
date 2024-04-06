@@ -16,7 +16,7 @@ public class AccountManager {
         Button signOutButton = new Button("Sign Out");
         signOutButton.setOnAction(event -> {
             root.getChildren().removeAll(signOutButton, fileOperations.getFileList(), fileOperations.getUploadButton(),
-                    fileOperations.getDeleteButton());
+                    fileOperations.getDeleteButton(), fileOperations.getDownloadButton());
             root.getChildren().add(loginBox.getLoginBox());
             fileOperations.getUploadButton().setDisable(true);
             fileOperations.getDeleteButton().setDisable(true);
