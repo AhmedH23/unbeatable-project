@@ -57,18 +57,20 @@ public class AccountManager {
                 if (newUsername.isEmpty() || email.isEmpty() || newPassword.isEmpty()) {
                     showAlert();
                 } else {
-                    persistAccount(newUsername, email, newPassword);
+                    account.setUsername(newUsername);
+                    account.setEmail(email);
+                    account.setPassword(newPassword);
+                    persistAccount(account);
                 }
             }
             return null;
         });
         dialog.showAndWait();
-        persistAccount(account.getUsername(), account.getEmail(), account.getPassword());
     }
 
-    private void persistAccount(String username, String email, String password) {
-        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(ACCOUNTS_FILE, true)))) {
-            writer.println(username + "," + email + "," + password);
+    private void persistAccount(Account account) {
+        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(ACCOUNTS_FILE, false)))) {
+            writer.println(account.getUsername() + "," + account.getEmail() + "," + account.getPassword());
         } catch (IOException e) {
             e.printStackTrace();
         }
