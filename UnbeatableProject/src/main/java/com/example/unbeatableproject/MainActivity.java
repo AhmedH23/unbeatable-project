@@ -30,7 +30,7 @@ public class MainActivity extends Application {
             if (validLogin) {
                 FileOperations fileOperations = new FileOperations(primaryStage, enteredUsername);
                 root.getChildren().addAll(fileOperations.getFileList(), fileOperations.getUploadButton(),
-                        fileOperations.getDeleteButton(), fileOperations.getDownloadButton());
+                        fileOperations.getDeleteButton(), fileOperations.getDownloadButton(), fileOperations.getUndoButton());
                 fileOperations.getUploadButton().setDisable(false);
                 fileOperations.getDeleteButton().setDisable(false);
                 fileOperations.getDownloadButton().setDisable(false);
