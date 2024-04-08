@@ -19,6 +19,7 @@ public class FileOperations {
     private final File uploadDirectory;
     private final Map<String, String> deletedFilesMap;
     private final Stack<UndoAction> undoStack;
+    private final File recycleBinDirectory;
 
     public FileOperations(Stage primaryStage, String loggedInUsername) {
         fileChooser = new FileChooser();
@@ -32,6 +33,11 @@ public class FileOperations {
         directoryChooser.setTitle("Choose Download Directory");
         deletedFilesMap = new HashMap<>();
         undoStack = new Stack<>();
+
+        recycleBinDirectory = new File("recycle_bin_" + loggedInUsername); // Initialize recycle bin directory
+        if (!recycleBinDirectory.exists()) {
+            recycleBinDirectory.mkdirs();
+        }
 
         if (!uploadDirectory.exists()) {
             uploadDirectory.mkdirs();
@@ -67,12 +73,17 @@ public class FileOperations {
         List<String> selectedFiles = new ArrayList<>(fileList.getSelectionModel().getSelectedItems());
         selectedFiles.forEach(fileName -> {
             File fileToDelete = new File(uploadDirectory, fileName);
-            if (fileToDelete.exists() && fileToDelete.delete()) {
-                fileList.getItems().remove(fileName);
-                deletedFilesMap.put(fileName, String.valueOf(fileToDelete));
-                undoStack.push(new UndoAction(UndoAction.ActionType.DELETE, fileName));
+            if (fileToDelete.exists()) {
+                File recycleBinFile = new File(recycleBinDirectory, fileName);
+                if (fileToDelete.renameTo(recycleBinFile)) { // Move file to recycle bin
+                    fileList.getItems().remove(fileName);
+                    deletedFilesMap.put(fileName, recycleBinFile.getAbsolutePath()); // Store recycle bin path
+                    undoStack.push(new UndoAction(UndoAction.ActionType.DELETE, fileName));
+                } else {
+                    System.err.println("Failed to move file to recycle bin: " + fileName);
+                }
             } else {
-                System.err.println("Failed to delete file: " + fileName);
+                System.err.println("File does not exist: " + fileName);
             }
         });
     }
@@ -110,10 +121,22 @@ public class FileOperations {
                     break;
                 case DELETE:
                     String deletedFileName = lastAction.getFileName();
-                    File deletedFile = new File(deletedFilesMap.get(deletedFileName));
-                    if (deletedFile != null && deletedFile.exists()) {
-                        deletedFile.renameTo(new File(uploadDirectory, deletedFileName));
-                        fileList.getItems().add(deletedFileName);
+                    String recycleBinPath = deletedFilesMap.get(deletedFileName);
+                    if (recycleBinPath != null) {
+                        File recycleBinFile = new File(recycleBinPath);
+                        if (recycleBinFile.exists()) {
+                            File restoredFile = new File(uploadDirectory, deletedFileName);
+                            if (recycleBinFile.renameTo(restoredFile)) { // Restore file from recycle bin
+                                fileList.getItems().add(deletedFileName);
+                                deletedFilesMap.remove(deletedFileName);
+                            } else {
+                                System.err.println("Failed to restore file from recycle bin: " + deletedFileName);
+                            }
+                        } else {
+                            System.err.println("File not found in recycle bin: " + deletedFileName);
+                        }
+                    } else {
+                        System.err.println("Recycle bin path not found for file: " + deletedFileName);
                     }
                     break;
             }
