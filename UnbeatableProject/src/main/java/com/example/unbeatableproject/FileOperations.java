@@ -48,7 +48,7 @@ public class FileOperations {
         downloadButton.setOnAction(event -> downloadFiles());
         undoButton.setOnAction(event -> undoLastAction());
     }
-    private void uploadFiles(Stage primaryStage) {
+    void uploadFiles(Stage primaryStage) {
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(primaryStage);
         if (selectedFiles != null) {
             selectedFiles.forEach(file -> {
@@ -69,7 +69,7 @@ public class FileOperations {
             });
         }
     }
-    private void deleteFiles() {
+    void deleteFiles() {
         List<String> selectedFiles = new ArrayList<>(fileList.getSelectionModel().getSelectedItems());
         selectedFiles.forEach(fileName -> {
             File fileToDelete = new File(uploadDirectory, fileName);
@@ -87,7 +87,7 @@ public class FileOperations {
             }
         });
     }
-    private void downloadFiles() {
+    void downloadFiles() {
         List<String> selectedFiles = new ArrayList<>(fileList.getSelectionModel().getSelectedItems());
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save File");
@@ -109,18 +109,18 @@ public class FileOperations {
             }
         });
     }
-    private void undoLastAction() {
+    void undoLastAction() {
         if (!undoStack.isEmpty()) {
             UndoAction lastAction = undoStack.pop();
-            switch (lastAction.getActionType()) {
+            switch (lastAction.actionType()) {
                 case UPLOAD:
-                    String uploadedFileName = lastAction.getFileName();
+                    String uploadedFileName = lastAction.fileName();
                     File uploadedFile = new File(uploadDirectory, uploadedFileName);
                     uploadedFile.delete();
                     fileList.getItems().remove(uploadedFileName);
                     break;
                 case DELETE:
-                    String deletedFileName = lastAction.getFileName();
+                    String deletedFileName = lastAction.fileName();
                     String recycleBinPath = deletedFilesMap.get(deletedFileName);
                     if (recycleBinPath != null) {
                         File recycleBinFile = new File(recycleBinPath);
@@ -167,18 +167,6 @@ public class FileOperations {
         return undoButton;
     }
 }
-class UndoAction {
+record UndoAction(com.example.unbeatableproject.UndoAction.ActionType actionType, String fileName) {
     public enum ActionType {UPLOAD, DELETE}
-    private final ActionType actionType;
-    private final String fileName;
-    public UndoAction(ActionType actionType, String fileName) {
-        this.actionType = actionType;
-        this.fileName = fileName;
-    }
-    public ActionType getActionType() {
-        return actionType;
-    }
-    public String getFileName() {
-        return fileName;
-    }
 }
