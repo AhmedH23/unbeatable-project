@@ -18,7 +18,7 @@ public class FileOperations {
     private final Button undoButton;
     private final File uploadDirectory;
     private final Map<String, String> deletedFilesMap;
-    private final Stack<UndoAction> undoStack;
+    final Stack<UndoAction> undoStack;
     private final File recycleBinDirectory;
 
     public FileOperations(Stage primaryStage, String loggedInUsername) {
@@ -48,6 +48,7 @@ public class FileOperations {
         downloadButton.setOnAction(event -> downloadFiles());
         undoButton.setOnAction(event -> undoLastAction());
     }
+
     void uploadFiles(Stage primaryStage) {
         List<File> selectedFiles = fileChooser.showOpenMultipleDialog(primaryStage);
         if (selectedFiles != null) {

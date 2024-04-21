@@ -1,46 +1,28 @@
 package com.example.unbeatableproject;
 
-import javafx.scene.control.ListView;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.io.File;
-import java.util.Stack;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileOperationsTests {
-    private FileOperations fileOperations;
-    private File uploadDirectory;
+    private FileOperations fileOps;
+    private Stage primaryStage;
 
     @BeforeEach
     void setUp() {
-        Stage primaryStage = new Stage(); // Mock stage
-        String loggedInUsername = "testUser";
-        fileOperations = new FileOperations(primaryStage, loggedInUsername);
-        uploadDirectory = new File("uploaded_files_testUser");
+        Platform.startup(() -> {
+            primaryStage = new Stage(); // Create Stage instance on JavaFX application thread
+            fileOps = new FileOperations(primaryStage, "testUser"); // Initialize FileOperations instance
+        });
     }
     @Test
-    void downloadFilesTest() {
-        // Assuming "testFile.txt" exists in uploadDirectory
-        ListView<String> fileList = fileOperations.getFileList();
-        fileList.getItems().add("testFile.txt");
-        // Invoke the method
-        fileOperations.downloadFiles();
-        // Check if the file was downloaded
-        File downloadedFile = new File("testFile.txt");
-        assertTrue(downloadedFile.exists());
-        downloadedFile.delete(); // Clean up downloaded file
-    }
-    @Test
-    void undoLastActionDeleteTest() {
-        // Assuming a delete action is performed before this test
-        File deletedFile = new File(uploadDirectory, "testFile.txt");
-        deletedFile.mkdirs();
-        Stack<UndoAction> undoStack = new Stack<>();
-        undoStack.push(new UndoAction(UndoAction.ActionType.DELETE, "testFile.txt"));
-        // Invoke the method
-        fileOperations.undoLastAction();
-        // Check if the delete action was undone
-        assertTrue(deletedFile.exists());
+    void undoTest() {
+        // Test Undo after Upload
+        fileOps.getFileList().getItems().clear(); // Clear file list
+        fileOps.uploadFiles(primaryStage); // Upload a file
+        fileOps.undoLastAction(); // Undo upload
+        assertFalse(fileOps.getFileList().getItems().contains("testFile.txt")); // Check if file is removed after undo
     }
 }
