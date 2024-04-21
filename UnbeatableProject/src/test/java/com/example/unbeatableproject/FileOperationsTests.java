@@ -19,10 +19,12 @@ public class FileOperationsTests {
     }
     @Test
     void undoTest() {
+        Platform.runLater(() -> {
         // Test Undo after Upload
         fileOps.getFileList().getItems().clear(); // Clear file list
         fileOps.uploadFiles(primaryStage); // Upload a file
         fileOps.undoLastAction(); // Undo upload
         assertFalse(fileOps.getFileList().getItems().contains("testFile.txt")); // Check if file is removed after undo
+        });
     }
 }
